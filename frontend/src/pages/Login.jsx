@@ -16,7 +16,7 @@ export default function Login() {
         setError("");
 
         try {
-            await api.post("/auth/login", { email, password });
+            await api.post("/auth/login", { email, password }, { withCredentials: true });
             navigate("/");
             window.location.reload(); // Ensure context updates
         } catch (err) {

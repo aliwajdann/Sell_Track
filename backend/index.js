@@ -13,9 +13,11 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors({
-    origin: "https://sell-track.vercel.app/",
+    origin: "https://sell-track.vercel.app",
     credentials: true
 }));
+
+app.options("*", cors());
 app.use(cookieParser());
 
 // routes
