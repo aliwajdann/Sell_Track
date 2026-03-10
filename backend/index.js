@@ -16,8 +16,6 @@ app.use(cors({
     origin: "https://sell-track.vercel.app",
     credentials: true
 }));
-
-app.options("*", cors());
 app.use(cookieParser());
 
 // routes
