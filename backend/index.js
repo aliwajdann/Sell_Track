@@ -13,8 +13,8 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors({
-    origin: "*",
-    // credentials: true
+    origin: "https://sell-track.vercel.app/",
+    credentials: true
 }));
 app.use(cookieParser());
 
