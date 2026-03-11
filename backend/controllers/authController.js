@@ -55,10 +55,12 @@ export const loginUser = async (req, res, next) => {
             { expiresIn: "1d" }
         );
 
+        const isProduction = process.env.NODE_ENV === "production" || req.hostname !== "localhost";
+
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge: 24 * 60 * 60 * 1000
         });
 
@@ -130,10 +132,12 @@ export const updateUser = async (req, res, next) => {
             { expiresIn: "1d" }
         );
 
+        const isProduction = process.env.NODE_ENV === "production" || req.hostname !== "localhost";
+
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge: 24 * 60 * 60 * 1000
         });
 
