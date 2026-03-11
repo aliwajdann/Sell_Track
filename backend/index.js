@@ -23,6 +23,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.get("/", (req, res) => {
+    res.send("SellTrack API is alive 🚀");
+});
 
 
 app.listen(port, () => {
