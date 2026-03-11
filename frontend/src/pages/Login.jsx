@@ -108,12 +108,12 @@ export default function Login() {
 
             {/* Right Side: Visual/Branding */}
             <div className="hidden lg:flex bg-bg-main items-center justify-center p-24 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full -mr-48 -mt-48 blur-3xl"></div>
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary/10 rounded-full -ml-48 -mb-48 blur-3xl"></div>
+                <div className="absolute top-0 right-0  bg-primary/5 rounded-full -mr-48 -mt-48 blur-3xl"></div>
+                <div className="absolute bottom-0 left-0  bg-primary/10 rounded-full -ml-48 -mb-48 blur-3xl"></div>
 
                 <div className="relative z-10 w-full max-w-lg">
                     <div className="card-premium p-12 bg-white/80 backdrop-blur-xl border-white shadow-2xl shadow-primary/10 rotate-2">
-                        <div className="w-16 h-16 rounded-[2rem] bg-primary text-white flex items-center justify-center mb-8 shadow-xl shadow-primary/30">
+                        <div className="w-16 h-16  bg-primary text-white flex items-center justify-center mb-8 shadow-xl shadow-primary/30">
                             <ShoppingBag size={32} />
                         </div>
                         <h2 className="text-3xl font-black text-text-main leading-tight mb-6">
