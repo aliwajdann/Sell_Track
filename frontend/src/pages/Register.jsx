@@ -37,7 +37,7 @@ export default function Register() {
                         <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
                             <Package size={24} />
                         </div>
-                        <span className="text-2xl font-bold tracking-tight text-text-main">InstaOrder</span>
+                        <span className="text-2xl font-bold tracking-tight text-text-main">SellTrack</span>
                     </Link>
                     <h1 className="text-3xl font-bold text-text-main tracking-tight">Create an account</h1>
                     <p className="text-text-secondary mt-2">Join us and start managing your orders</p>
