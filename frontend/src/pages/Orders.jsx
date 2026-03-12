@@ -1,25 +1,27 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
-import { 
-    ShoppingBag, 
-    User, 
-    Phone, 
-    Mail, 
-    MapPin, 
-    Plus, 
-    Trash2, 
-    Edit3, 
-    ChevronDown, 
-    ChevronUp, 
-    Clock, 
-    CheckCircle2, 
-    Truck, 
+import {
+    ShoppingBag,
+    User,
+    Phone,
+    Mail,
+    MapPin,
+    Plus,
+    Trash2,
+    Edit3,
+    ChevronDown,
+    ChevronUp,
+    Clock,
+    CheckCircle2,
+    Truck,
     AlertCircle,
     Receipt,
     Calendar,
     ArrowRight,
-    Search
+    Search,
+    X,
+    Filter
 } from "lucide-react";
 
 export default function Orders() {
@@ -85,19 +87,19 @@ export default function Orders() {
         if (!selectedItem.product_id) return;
         const prod = products.find(p => p.id === selectedItem.product_id);
         const existing = cart.find(item => item.product_id === prod.id);
-        
+
         if (existing) {
-            setCart(cart.map(item => 
-                item.product_id === prod.id 
-                ? { ...item, quantity: item.quantity + parseInt(selectedItem.quantity) } 
-                : item
+            setCart(cart.map(item =>
+                item.product_id === prod.id
+                    ? { ...item, quantity: item.quantity + parseInt(selectedItem.quantity) }
+                    : item
             ));
         } else {
-            setCart([...cart, { 
-                product_id: prod.id, 
-                name: prod.name, 
-                price: prod.price, 
-                quantity: parseInt(selectedItem.quantity) 
+            setCart([...cart, {
+                product_id: prod.id,
+                name: prod.name,
+                price: prod.price,
+                quantity: parseInt(selectedItem.quantity)
             }]);
         }
         setSelectedItem({ product_id: '', quantity: 1 });
@@ -141,11 +143,11 @@ export default function Orders() {
             address: order.address,
             status: order.status
         });
-        setCart(order.items.map(i => ({ 
-            product_id: i.product_id, 
-            name: i.product_name, 
-            price: i.price, 
-            quantity: i.quantity 
+        setCart(order.items.map(i => ({
+            product_id: i.product_id,
+            name: i.product_name,
+            price: i.price,
+            quantity: i.quantity
         })));
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -157,16 +159,16 @@ export default function Orders() {
     };
 
     const getStatusStyle = (status) => {
-        switch(status) {
-            case 'delivered': return 'bg-green-50 text-green-600 border-green-100';
+        switch (status) {
+            case 'delivered': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
             case 'shipped': return 'bg-blue-50 text-blue-600 border-blue-100';
-            case 'cancelled': return 'bg-red-50 text-red-600 border-red-100';
-            default: return 'bg-orange-50 text-orange-600 border-orange-100';
+            case 'cancelled': return 'bg-rose-50 text-rose-600 border-rose-100';
+            default: return 'bg-amber-50 text-amber-600 border-amber-100';
         }
     };
 
     const getStatusIcon = (status) => {
-        switch(status) {
+        switch (status) {
             case 'delivered': return <CheckCircle2 size={12} />;
             case 'shipped': return <Truck size={12} />;
             case 'cancelled': return <AlertCircle size={12} />;
@@ -175,284 +177,254 @@ export default function Orders() {
     };
 
     return (
-        <div className="min-h-screen bg-bg-main">
+        <div className="min-h-screen bg-bg-main font-inter">
             <Navbar />
-            
-            <main className="max-w-7xl mx-auto pt-28 pb-20 px-6">
-                {/* Header Section */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                    <div>
-                        <div className="flex items-center gap-2 mb-2">
-                            <span className="bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full">
-                                Sales & Distribution
-                            </span>
-                        </div>
-                        <h1 className="text-4xl font-black text-text-main tracking-tight flex items-center gap-3">
-                            <Receipt className="text-primary" size={32} />
-                            Orders Manager
-                        </h1>
-                        <p className="text-text-muted mt-2 font-medium">Create new orders and manage customer fulfillment.</p>
-                    </div>
 
-                    <div className="flex items-center gap-4">
-                        <div className="card-premium py-2 px-6 flex items-center gap-3">
-                             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                             <span className="text-xs font-black text-text-main uppercase tracking-widest">System Online</span>
-                        </div>
+            <main className="max-w-7xl mx-auto pt-24 pb-20 px-6">
+                {/* Page Header */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                    <div>
+                        <h1 className="text-3xl font-bold text-text-main flex items-center gap-3">
+                            <Receipt className="text-primary" size={28} />
+                            Orders
+                        </h1>
+                        <p className="text-text-secondary mt-1">Manage and track your customer orders.</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <button className="btn-secondary">
+                            <Filter size={18} className="mr-2" /> Filter
+                        </button>
+                        <button className="btn-secondary">
+                            <Calendar size={18} className="mr-2" /> History
+                        </button>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                    {/* LEFT COLUMN: FORM */}
-                    <div className="lg:col-span-5">
-                        <div className={`card-premium sticky top-28 transition-all duration-500 ${editId ? 'ring-2 ring-primary border-primary/20 shadow-xl shadow-primary/5' : ''}`}>
-                            <div className="flex items-center justify-between mb-8">
-                                <h2 className="text-xl font-black text-text-main tracking-tight uppercase">
-                                    {editId ? 'Edit Order Details' : 'Create New Order'}
-                                </h2>
-                                {editId && (
-                                    <button onClick={resetForm} className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline">
-                                        Discard Edit
-                                    </button>
-                                )}
-                            </div>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    {/* Left Side: Form */}
+                    <div className="lg:col-span-4 space-y-6">
+                        <div className="card sticky top-24">
+                            <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
+                                {editId ? <Edit3 size={18} className="text-primary" /> : <Plus size={18} className="text-primary" />}
+                                {editId ? 'Edit Order' : 'Create New Order'}
+                            </h2>
 
-                            <form onSubmit={handleSaveOrder} className="space-y-6">
-                                <div className="space-y-4">
-                                    <div className="relative">
-                                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
-                                        <input className="input-premium pl-12" placeholder="Customer Full Name" value={customer.name} onChange={e => setCustomer({ ...customer, name: e.target.value })} required />
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="relative">
-                                            <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
-                                            <input className="input-premium pl-12" placeholder="Phone" value={customer.phone} onChange={e => setCustomer({ ...customer, phone: e.target.value })} required />
-                                        </div>
-                                        <div className="relative">
-                                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
-                                            <input className="input-premium pl-12" placeholder="Email" value={customer.email} onChange={e => setCustomer({ ...customer, email: e.target.value })} />
-                                        </div>
-                                    </div>
-                                    <div className="relative">
-                                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
-                                        <input className="input-premium pl-12" placeholder="Shipping Address" value={customer.address} onChange={e => setCustomer({ ...customer, address: e.target.value })} required />
-                                    </div>
-                                    
-                                    {editId && (
-                                        <div className="space-y-2 pt-2">
-                                            <label className="text-[10px] font-black text-text-muted uppercase tracking-widest ml-1">Order Status</label>
-                                            <select className="input-premium appearance-none bg-bg-main" value={customer.status} onChange={e => setCustomer({ ...customer, status: e.target.value })}>
-                                                <option value="pending">Pending Approval</option>
-                                                <option value="shipped">Shipped Out</option>
-                                                <option value="delivered">Fully Delivered</option>
-                                                <option value="cancelled">Cancelled</option>
-                                            </select>
-                                        </div>
-                                    )}
+                            <form onSubmit={handleSaveOrder} className="space-y-4">
+                                <div>
+                                    <label className="text-xs font-bold text-text-secondary uppercase mb-1.5 block">Customer Name</label>
+                                    <input
+                                        type="text" required className="input" placeholder="e.g. John Doe"
+                                        value={customer.name} onChange={e => setCustomer({ ...customer, name: e.target.value })}
+                                    />
                                 </div>
-
-                                <div className="pt-6 border-t border-border">
-                                    <h3 className="text-xs font-black text-text-muted uppercase tracking-widest mb-4">Add Items to Cart</h3>
-                                    <div className="flex flex-col gap-3 p-4 rounded-3xl bg-bg-main border border-border">
-                                        <select className="bg-transparent outline-none font-bold text-sm text-text-main px-2 py-1" value={selectedItem.product_id} onChange={e => setSelectedItem({ ...selectedItem, product_id: e.target.value })}>
-                                            <option value="">Choose a product...</option>
-                                            {products.map(p => <option key={p.id} value={p.id}>{p.name} — ${p.price}</option>)}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-xs font-bold text-text-secondary uppercase mb-1.5 block">Phone</label>
+                                        <input
+                                            type="tel" required className="input" placeholder="+1..."
+                                            value={customer.phone} onChange={e => setCustomer({ ...customer, phone: e.target.value })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-text-secondary uppercase mb-1.5 block">Status</label>
+                                        <select
+                                            className="input appearance-none"
+                                            value={customer.status} onChange={e => setCustomer({ ...customer, status: e.target.value })}
+                                        >
+                                            <option value="pending">Pending</option>
+                                            <option value="shipped">Shipped</option>
+                                            <option value="delivered">Delivered</option>
+                                            <option value="cancelled">Cancelled</option>
                                         </select>
-                                        <div className="flex items-center justify-between pt-2 border-t border-border/50">
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-xs font-bold text-text-muted">QTY:</span>
-                                                <input type="number" className="w-12 bg-transparent font-black text-primary outline-none" value={selectedItem.quantity} onChange={e => setSelectedItem({ ...selectedItem, quantity: e.target.value })} min="1" />
-                                            </div>
-                                            <button type="button" onClick={addToCart} className="bg-text-main text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition flex items-center gap-2">
-                                                <Plus size={14} /> Add
-                                            </button>
-                                        </div>
                                     </div>
                                 </div>
+                                <div>
+                                    <label className="text-xs font-bold text-text-secondary uppercase mb-1.5 block">Email</label>
+                                    <input
+                                        type="email" className="input" placeholder="john@example.com"
+                                        value={customer.email} onChange={e => setCustomer({ ...customer, email: e.target.value })}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-bold text-text-secondary uppercase mb-1.5 block">Delivery Address</label>
+                                    <textarea
+                                        required className="input min-h-[80px]" placeholder="Full street address..."
+                                        value={customer.address} onChange={e => setCustomer({ ...customer, address: e.target.value })}
+                                    />
+                                </div>
 
-                                {/* Cart Preview */}
-                                {cart.length > 0 && (
-                                    <div className="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                                        {cart.map((item, i) => (
-                                            <div key={i} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-border shadow-sm group">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-primary font-black text-xs">
-                                                        {item.quantity}
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-sm font-black text-text-main">{item.name}</p>
-                                                        <p className="text-[10px] text-text-muted font-bold">${item.price} each</p>
-                                                    </div>
+                                <div className="pt-4 border-t border-border">
+                                    <label className="text-xs font-bold text-text-secondary uppercase mb-3 block">Add Products</label>
+                                    <div className="flex gap-2 mb-4">
+                                        <select
+                                            className="input flex-1"
+                                            value={selectedItem.product_id}
+                                            onChange={e => setSelectedItem({ ...selectedItem, product_id: e.target.value })}
+                                        >
+                                            <option value="">Select Product</option>
+                                            {products.map(p => (
+                                                <option key={p.id} value={p.id}>{p.name} - ${p.price}</option>
+                                            ))}
+                                        </select>
+                                        <input
+                                            type="number" min="1" className="input w-20"
+                                            value={selectedItem.quantity}
+                                            onChange={e => setSelectedItem({ ...selectedItem, quantity: e.target.value })}
+                                        />
+                                        <button
+                                            type="button" onClick={addToCart}
+                                            className="btn-secondary px-3"
+                                        >
+                                            <Plus size={18} />
+                                        </button>
+                                    </div>
+
+                                    {/* Cart List */}
+                                    <div className="space-y-2 mb-6 max-h-40 overflow-y-auto">
+                                        {cart.map((item, idx) => (
+                                            <div key={idx} className="flex justify-between items-center p-2 rounded-lg bg-bg-main border border-border">
+                                                <div className="text-xs">
+                                                    <p className="font-bold text-text-main">{item.name}</p>
+                                                    <p className="text-text-secondary">Qty: {item.quantity} × ${item.price}</p>
                                                 </div>
-                                                <div className="flex items-center gap-4">
-                                                    <span className="font-black text-text-main text-sm">${(item.quantity * item.price).toFixed(2)}</span>
-                                                    <button type="button" onClick={() => setCart(cart.filter((_, idx) => idx !== i))} className="text-text-muted hover:text-red-500 transition">
-                                                        <Trash2 size={16} />
-                                                    </button>
-                                                </div>
+                                                <button
+                                                    type="button" onClick={() => setCart(cart.filter((_, i) => i !== idx))}
+                                                    className="text-rose-500 p-1 hover:bg-rose-50 rounded"
+                                                >
+                                                    <X size={14} />
+                                                </button>
                                             </div>
                                         ))}
+                                        {cart.length === 0 && (
+                                            <div className="text-center py-4 border-2 border-dashed border-border rounded-xl">
+                                                <p className="text-xs text-text-secondary">Cart is empty</p>
+                                            </div>
+                                        )}
                                     </div>
-                                )}
 
-                                <div className="pt-4">
-                                    <div className="flex justify-between items-center mb-6 px-2">
-                                        <span className="text-text-muted font-bold">Grand Total</span>
-                                        <span className="text-3xl font-black text-text-main tracking-tighter">
-                                            <span className="text-primary text-xl mr-1">$</span>
-                                            {cart.reduce((sum, i) => sum + (i.quantity * i.price), 0).toFixed(2)}
-                                        </span>
+                                    <div className="flex gap-3">
+                                        {editId && (
+                                            <button type="button" onClick={resetForm} className="btn-secondary flex-1">
+                                                Cancel
+                                            </button>
+                                        )}
+                                        <button type="submit" className="btn-primary flex-1">
+                                            {editId ? 'Update Order' : 'Create Order'}
+                                        </button>
                                     </div>
-                                    <button type="submit" className="btn-primary w-full py-4 flex items-center justify-center gap-3 text-lg">
-                                        <ShoppingBag size={20} />
-                                        <span>{editId ? 'Update Order' : 'Complete Purchase'}</span>
-                                    </button>
                                 </div>
                             </form>
                         </div>
                     </div>
 
-                    {/* RIGHT COLUMN: HISTORY */}
-                    <div className="lg:col-span-7">
-                        <div className="flex items-center justify-between mb-8">
-                             <h2 className="text-xl font-black text-text-main tracking-tight uppercase">Recent Orders</h2>
-                             <div className="flex items-center gap-2 text-text-muted">
-                                <Search size={16} />
-                                <span className="text-xs font-bold uppercase tracking-widest">Filter: All Time</span>
-                             </div>
-                        </div>
-
-                        {loading ? (
-                             <div className="space-y-6">
-                                {[1,2,3].map(i => <div key={i} className="card-premium h-24 animate-pulse border-none bg-gray-200/50"></div>)}
-                             </div>
-                        ) : (
-                            <div className="space-y-6">
-                                {orders.map((order) => {
-                                    const total = order.items.reduce((sum, i) => sum + (i.quantity * i.price), 0);
-                                    const isExpanded = expandedId === order.id;
-
-                                    return (
-                                        <div key={order.id} className={`group bg-white rounded-[2rem] border border-border shadow-sm transition-all duration-500 overflow-hidden ${isExpanded ? 'ring-2 ring-primary border-primary/20 shadow-xl' : 'hover:shadow-md hover:border-primary/20'}`}>
-                                            <div className="p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 cursor-pointer" onClick={() => setExpandedId(isExpanded ? null : order.id)}>
-                                                <div className="flex items-start gap-5">
-                                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border transition-colors ${isExpanded ? 'bg-primary text-white border-primary' : 'bg-bg-main text-text-muted group-hover:bg-accent group-hover:text-primary'}`}>
-                                                        <Receipt size={28} />
+                    {/* Right Side: Order List */}
+                    <div className="lg:col-span-8 space-y-6">
+                        <div className="table-container">
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Customer</th>
+                                        <th>Status</th>
+                                        <th>Total Items</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading ? (
+                                        <tr>
+                                            <td colSpan="5" className="text-center py-12 text-text-secondary">Loading orders...</td>
+                                        </tr>
+                                    ) : orders.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="5" className="text-center py-12 text-text-secondary">No orders found.</td>
+                                        </tr>
+                                    ) : orders.map((order) => (
+                                        <React.Fragment key={order.id}>
+                                            <tr className="hover:bg-bg-main/50 cursor-pointer" onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}>
+                                                <td className="font-mono text-xs font-bold text-primary">#{order.id.slice(0, 8)}</td>
+                                                <td>
+                                                    <p className="font-bold text-text-main">{order.customer_name}</p>
+                                                    <p className="text-xs text-text-secondary">{order.customer_phone}</p>
+                                                </td>
+                                                <td>
+                                                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase border ${getStatusStyle(order.status)}`}>
+                                                        {getStatusIcon(order.status)}
+                                                        {order.status}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div className="flex items-center gap-2">
+                                                        <ShoppingBag size={14} className="text-text-secondary" />
+                                                        <span className="font-semibold">{order.items.reduce((acc, item) => acc + item.quantity, 0)}</span>
                                                     </div>
-                                                    <div>
-                                                        <div className="flex items-center gap-3 mb-1.5">
-                                                            <span className="text-[10px] font-black text-text-muted flex items-center gap-1 uppercase tracking-widest">
-                                                                <Calendar size={10} /> {new Date(order.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                                                            </span>
-                                                            <span className={`text-[10px] font-black px-2.5 py-1 rounded-full border uppercase tracking-widest flex items-center gap-1.5 ${getStatusStyle(order.status)}`}>
-                                                                {getStatusIcon(order.status)}
-                                                                {order.status}
-                                                            </span>
-                                                        </div>
-                                                        <h3 className="text-xl font-black text-text-main tracking-tight group-hover:text-primary transition-colors">{order.customer_name}</h3>
-                                                        <p className="text-[10px] text-text-muted font-black tracking-[0.2em] uppercase mt-1">ID: {order.id.slice(0, 12)}</p>
+                                                </td>
+                                                <td onClick={(e) => e.stopPropagation()}>
+                                                    <div className="flex items-center gap-2">
+                                                        <button
+                                                            onClick={() => startEdit(order)}
+                                                            className="p-2 text-text-secondary hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                                        >
+                                                            <Edit3 size={16} />
+                                                        </button>
+                                                        <button
+                                                            className="p-2 text-text-secondary hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}
+                                                            className="p-2 text-text-secondary hover:bg-bg-main rounded-lg"
+                                                        >
+                                                            {expandedId === order.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                                        </button>
                                                     </div>
-                                                </div>
-                                                <div className="flex items-center justify-between md:flex-col md:items-end md:justify-center border-t md:border-t-0 border-border pt-4 md:pt-0">
-                                                    <p className="text-3xl font-black text-text-main tracking-tighter">${total.toFixed(2)}</p>
-                                                    <div className="flex items-center gap-2 text-text-muted mt-1">
-                                                        <span className="text-xs font-bold uppercase tracking-widest">{order.items.length} {order.items.length === 1 ? 'Item' : 'Items'}</span>
-                                                        {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {isExpanded && (
-                                                <div className="px-8 pb-8 pt-0 animate-in slide-in-from-top-4 duration-500">
-                                                    <div className="grid md:grid-cols-2 gap-10 p-8 rounded-3xl bg-bg-main border border-border">
-                                                        <div className="space-y-6">
-                                                            <h4 className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] flex items-center gap-2">
-                                                                <div className="w-1 h-1 rounded-full bg-primary"></div> Shipping Details
-                                                            </h4>
-                                                            <div className="space-y-4">
-                                                                <div className="flex items-center gap-4">
-                                                                    <div className="w-10 h-10 rounded-xl bg-white border border-border flex items-center justify-center text-primary">
-                                                                        <Mail size={18} />
-                                                                    </div>
-                                                                    <div>
-                                                                        <p className="text-[10px] font-black text-text-muted uppercase">Email Address</p>
-                                                                        <p className="text-sm font-bold text-text-main">{order.customer_email}</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="flex items-center gap-4">
-                                                                    <div className="w-10 h-10 rounded-xl bg-white border border-border flex items-center justify-center text-primary">
-                                                                        <Phone size={18} />
-                                                                    </div>
-                                                                    <div>
-                                                                        <p className="text-[10px] font-black text-text-muted uppercase">Contact Number</p>
-                                                                        <p className="text-sm font-bold text-text-main">{order.customer_phone}</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="flex items-center gap-4">
-                                                                    <div className="w-10 h-10 rounded-xl bg-white border border-border flex items-center justify-center text-primary">
-                                                                        <MapPin size={18} />
-                                                                    </div>
-                                                                    <div>
-                                                                        <p className="text-[10px] font-black text-text-muted uppercase">Delivery Location</p>
-                                                                        <p className="text-sm font-bold text-text-main leading-snug">{order.address}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="space-y-6">
-                                                            <h4 className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] flex items-center gap-2">
-                                                                <div className="w-1 h-1 rounded-full bg-primary"></div> Items Summary
-                                                            </h4>
+                                                </td>
+                                            </tr>
+                                            {expandedId === order.id && (
+                                                <tr className="bg-bg-main/30">
+                                                    <td colSpan="5" className="p-4">
+                                                        <div className="grid md:grid-cols-2 gap-6 animate-fade-in">
                                                             <div className="space-y-3">
-                                                                {order.items.map((item, i) => (
-                                                                    <div key={i} className="flex justify-between items-center py-3 border-b border-border last:border-0 group/item">
-                                                                        <div className="flex items-center gap-3">
-                                                                            <span className="w-6 h-6 rounded bg-white border border-border flex items-center justify-center text-[10px] font-black text-text-main">{item.quantity}x</span>
-                                                                            <span className="text-sm font-bold text-text-main group-hover/item:text-primary transition-colors">{item.product_name}</span>
-                                                                        </div>
-                                                                        <span className="font-black text-text-main text-sm">${(item.quantity * item.price).toFixed(2)}</span>
+                                                                <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider">Customer Details</h4>
+                                                                <div className="grid gap-2">
+                                                                    <div className="flex items-center gap-3 text-sm">
+                                                                        <Mail size={14} className="text-text-secondary" /> {order.customer_email}
                                                                     </div>
-                                                                ))}
-                                                                <div className="flex justify-between pt-4 mt-2">
-                                                                    <span className="text-sm font-black text-text-main">Total Receivable</span>
-                                                                    <span className="text-xl font-black text-primary">${total.toFixed(2)}</span>
+                                                                    <div className="flex items-center gap-3 text-sm">
+                                                                        <MapPin size={14} className="text-text-secondary" /> {order.address}
+                                                                    </div>
+                                                                    <div className="flex items-center gap-3 text-sm">
+                                                                        <Calendar size={14} className="text-text-secondary" /> {new Date(order.created_at).toLocaleDateString()}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="space-y-3">
+                                                                <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider">Order Items</h4>
+                                                                <div className="space-y-2">
+                                                                    {order.items.map((item, idx) => (
+                                                                        <div key={idx} className="flex justify-between items-center text-sm p-2 bg-surface rounded-lg border border-border">
+                                                                            <span>{item.product_name} <span className="text-text-secondary ml-1">× {item.quantity}</span></span>
+                                                                            <span className="font-bold">${(item.price * item.quantity).toFixed(2)}</span>
+                                                                        </div>
+                                                                    ))}
+                                                                    <div className="flex justify-between items-center pt-2 border-t border-border mt-2 px-2">
+                                                                        <span className="font-bold text-text-main">Total Amount</span>
+                                                                        <span className="font-bold text-lg text-primary">
+                                                                            ${order.items.reduce((acc, item) => acc + (item.price * item.quantity), 0).toFixed(2)}
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="mt-8 flex gap-4">
-                                                        <button 
-                                                            onClick={() => startEdit(order)} 
-                                                            className="flex-1 bg-text-main text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-black transition flex items-center justify-center gap-2 group/edit"
-                                                        >
-                                                            <Edit3 size={16} className="group-hover/edit:rotate-12 transition-transform" /> 
-                                                            Modify Order
-                                                        </button>
-                                                        <button 
-                                                            onClick={async () => { if (window.confirm('Archive this order? This action cannot be undone.')) { await api.delete(`/orders/${order.id}`); fetchInitialData(); } }} 
-                                                            className="px-6 bg-white border border-red-100 text-red-500 rounded-2xl hover:bg-red-50 transition"
-                                                            title="Delete Order"
-                                                        >
-                                                            <Trash2 size={20} />
-                                                        </button>
-                                                    </div>
-                                                </div>
+                                                    </td>
+                                                </tr>
                                             )}
-                                        </div>
-                                    );
-                                })}
-
-                                {orders.length === 0 && (
-                                     <div className="card-premium py-20 flex flex-col items-center justify-center text-center">
-                                        <div className="w-20 h-20 rounded-full bg-accent flex items-center justify-center text-primary mb-6">
-                                            <ShoppingBag size={40} />
-                                        </div>
-                                        <h3 className="text-2xl font-black text-text-main tracking-tight">No orders yet</h3>
-                                        <p className="text-text-muted font-medium mt-2 max-w-xs">Your order history is empty. Start by placing a new order using the form.</p>
-                                    </div>
-                                )}
-                            </div>
-                        )}
+                                        </React.Fragment>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </main>

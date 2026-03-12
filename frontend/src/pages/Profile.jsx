@@ -7,7 +7,9 @@ import {
     Lock,
     Save,
     AlertCircle,
-    CheckCircle2
+    CheckCircle2,
+    Shield,
+    BadgeCheck
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 
@@ -74,193 +76,190 @@ export default function Profile() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-bg-main font-inter">
             <Navbar />
-            <div className="pt-28 pb-12 px-6">
-                <div className="max-w-4xl mx-auto space-y-8">
-                    <div>
-                        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Account Settings</h1>
-                        <p className="text-gray-500 mt-2 font-medium">Manage your personal information and security.</p>
-                    </div>
+            <div className="max-w-5xl mx-auto pt-24 pb-20 px-6">
+                <div className="mb-10 animate-fade-in">
+                    <h1 className="text-3xl font-bold text-text-main flex items-center gap-3">
+                        <User className="text-primary" size={28} />
+                        Profile Settings
+                    </h1>
+                    <p className="text-text-secondary mt-1">Manage your account information and security.</p>
+                </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {/* Profile Information */}
-                        <div className="md:col-span-2 space-y-6">
-                            <section className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                                <div className="px-8 py-6 border-b border-gray-50 bg-gray-50/50">
-                                    <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                        <User size={20} className="text-indigo-600" />
-                                        Profile Information
-                                    </h2>
-                                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div className="lg:col-span-8 space-y-8">
+                        {/* Profile Section */}
+                        <div className="card animate-fade-in">
+                            <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
+                                <BadgeCheck size={20} className="text-primary" />
+                                Personal Information
+                            </h2>
 
-                                <form onSubmit={handleUpdateProfile} className="p-8 space-y-6">
-                                    {profileMessage.text && (
-                                        <div className={`p-4 rounded-2xl flex items-center gap-3 ${profileMessage.type === "success" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
-                                            }`}>
-                                            {profileMessage.type === "success" ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
-                                            <p className="text-sm font-semibold">{profileMessage.text}</p>
-                                        </div>
-                                    )}
+                            <form onSubmit={handleUpdateProfile} className="space-y-6">
+                                {profileMessage.text && (
+                                    <div className={`p-3 rounded-lg flex items-center gap-2 text-sm font-medium animate-fade-in ${
+                                        profileMessage.type === "success" ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-rose-50 text-rose-600 border border-rose-100"
+                                    }`}>
+                                        {profileMessage.type === "success" ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+                                        {profileMessage.text}
+                                    </div>
+                                )}
 
-                                    <div className="grid grid-cols-1 gap-6">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-gray-700 ml-1">Full Name</label>
-                                            <div className="relative">
-                                                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                                <input
-                                                    type="text"
-                                                    value={name}
-                                                    onChange={(e) => setName(e.target.value)}
-                                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition font-medium"
-                                                    placeholder="Your name"
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-gray-700 ml-1">Email Address</label>
-                                            <div className="relative">
-                                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                                <input
-                                                    type="email"
-                                                    value={email}
-                                                    onChange={(e) => setEmail(e.target.value)}
-                                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition font-medium"
-                                                    placeholder="email@example.com"
-                                                    required
-                                                />
-                                            </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label className="text-xs font-bold text-text-secondary uppercase mb-1.5 block ml-1">Full Name</label>
+                                        <div className="relative">
+                                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" size={18} />
+                                            <input
+                                                type="text"
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                                className="input pl-10"
+                                                required
+                                            />
                                         </div>
                                     </div>
 
-                                    <div className="pt-2">
-                                        <button
-                                            type="submit"
-                                            disabled={loading}
-                                            className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-8 py-3.5 rounded-2xl text-sm font-bold hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/30 transition active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none"
-                                        >
-                                            <Save size={18} />
-                                            Save Profile
-                                        </button>
+                                    <div>
+                                        <label className="text-xs font-bold text-text-secondary uppercase mb-1.5 block ml-1">Email Address</label>
+                                        <div className="relative">
+                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" size={18} />
+                                            <input
+                                                type="email"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                className="input pl-10"
+                                                required
+                                            />
+                                        </div>
                                     </div>
-                                </form>
-                            </section>
-
-                            {/* Password Security */}
-                            <section className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                                <div className="px-8 py-6 border-b border-gray-50 bg-gray-50/50">
-                                    <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                        <Lock size={20} className="text-indigo-600" />
-                                        Change Password
-                                    </h2>
                                 </div>
 
-                                <form onSubmit={handleUpdatePassword} className="p-8 space-y-6">
-                                    {passwordMessage.text && (
-                                        <div className={`p-4 rounded-2xl flex items-center gap-3 ${passwordMessage.type === "success" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
-                                            }`}>
-                                            {passwordMessage.type === "success" ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
-                                            <p className="text-sm font-semibold">{passwordMessage.text}</p>
-                                        </div>
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="btn-primary"
+                                >
+                                    {loading ? (
+                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                    ) : (
+                                        <span className="flex items-center gap-2">
+                                            <Save size={18} /> Save Changes
+                                        </span>
                                     )}
+                                </button>
+                            </form>
+                        </div>
 
-                                    <div className="space-y-6">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-gray-700 ml-1">Current Password</label>
+                        {/* Password Section */}
+                        <div className="card animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                            <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
+                                <Shield size={20} className="text-primary" />
+                                Security & Password
+                            </h2>
+
+                            <form onSubmit={handleUpdatePassword} className="space-y-6">
+                                {passwordMessage.text && (
+                                    <div className={`p-3 rounded-lg flex items-center gap-2 text-sm font-medium animate-fade-in ${
+                                        passwordMessage.type === "success" ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-rose-50 text-rose-600 border border-rose-100"
+                                    }`}>
+                                        {passwordMessage.type === "success" ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+                                        {passwordMessage.text}
+                                    </div>
+                                )}
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="text-xs font-bold text-text-secondary uppercase mb-1.5 block ml-1">Current Password</label>
+                                        <div className="relative">
+                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" size={18} />
+                                            <input
+                                                type="password"
+                                                value={currentPassword}
+                                                onChange={(e) => setCurrentPassword(e.target.value)}
+                                                className="input pl-10"
+                                                placeholder="••••••••"
+                                                required={newPassword.length > 0}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-xs font-bold text-text-secondary uppercase mb-1.5 block ml-1">New Password</label>
                                             <div className="relative">
-                                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" size={18} />
                                                 <input
                                                     type="password"
-                                                    value={currentPassword}
-                                                    onChange={(e) => setCurrentPassword(e.target.value)}
-                                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition font-medium"
+                                                    value={newPassword}
+                                                    onChange={(e) => setNewPassword(e.target.value)}
+                                                    className="input pl-10"
+                                                    placeholder="••••••••"
+                                                    required={currentPassword.length > 0}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="text-xs font-bold text-text-secondary uppercase mb-1.5 block ml-1">Confirm New Password</label>
+                                            <div className="relative">
+                                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" size={18} />
+                                                <input
+                                                    type="password"
+                                                    value={confirmPassword}
+                                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                                    className="input pl-10"
                                                     placeholder="••••••••"
                                                     required={newPassword.length > 0}
                                                 />
                                             </div>
                                         </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-bold text-gray-700 ml-1">New Password</label>
-                                                <div className="relative">
-                                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                                    <input
-                                                        type="password"
-                                                        value={newPassword}
-                                                        onChange={(e) => setNewPassword(e.target.value)}
-                                                        className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition font-medium"
-                                                        placeholder="••••••••"
-                                                        required={currentPassword.length > 0}
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-bold text-gray-700 ml-1">Confirm New Password</label>
-                                                <div className="relative">
-                                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                                    <input
-                                                        type="password"
-                                                        value={confirmPassword}
-                                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                                        className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition font-medium"
-                                                        placeholder="••••••••"
-                                                        required={newPassword.length > 0}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
+                                </div>
 
-                                    <div className="pt-2">
-                                        <button
-                                            type="submit"
-                                            disabled={loading || !newPassword}
-                                            className="flex items-center justify-center gap-2 bg-gray-900 text-white px-8 py-3.5 rounded-2xl text-sm font-bold hover:bg-black hover:shadow-lg transition active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
-                                        >
-                                            <Save size={18} />
-                                            Update Password
-                                        </button>
-                                    </div>
-                                </form>
-                            </section>
+                                <button
+                                    type="submit"
+                                    disabled={loading || !newPassword}
+                                    className="btn-primary"
+                                >
+                                    Update Password
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div className="lg:col-span-4 space-y-6">
+                        <div className="card bg-primary text-white border-none shadow-lg shadow-primary/20 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mb-6">
+                                <User size={28} />
+                            </div>
+                            <h3 className="text-xl font-bold mb-2">Public Profile</h3>
+                            <p className="text-primary-foreground/80 text-sm mb-6 leading-relaxed">
+                                This information will be visible to other members of your organization.
+                            </p>
+                            <div className="space-y-3">
+                                <div className="flex justify-between text-sm">
+                                    <span className="opacity-70">User ID</span>
+                                    <span className="font-mono font-bold">#{user?.id?.toString().slice(-6)}</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="opacity-70">Username</span>
+                                    <span className="font-bold">{user?.username}</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="opacity-70">Joined</span>
+                                    <span className="font-bold">Mar 2026</span>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Sidebar / Info */}
-                        <div className="space-y-6">
-                            <section className="bg-indigo-600 rounded-3xl p-8 text-white shadow-xl shadow-indigo-200">
-                                <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center mb-6">
-                                    <User size={32} />
-                                </div>
-                                <h3 className="text-xl font-bold mb-2">Need Help?</h3>
-                                <p className="text-indigo-100 text-sm font-medium leading-relaxed mb-6">
-                                    If you're having trouble updating your account or have security concerns, please contact our support team.
-                                </p>
-                                <button className="w-full bg-white text-indigo-600 py-3.5 rounded-2xl text-sm font-bold hover:bg-indigo-50 transition active:scale-95">
-                                    Contact Support
-                                </button>
-                            </section>
-
-                            <section className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-                                <h3 className="text-sm font-black text-gray-400 uppercase tracking-widest mb-4">Account Stats</h3>
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-500 text-sm font-bold">Status</span>
-                                        <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-black uppercase">Active</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-500 text-sm font-bold">User ID</span>
-                                        <span className="text-gray-900 text-sm font-mono">#{user?.id?.toString().slice(-6)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-500 text-sm font-bold">User Name</span>
-                                        <span className="text-gray-900 text-sm font-mono">{user?.username}</span>
-                                    </div>
-                                </div>
-                            </section>
+                        <div className="card animate-fade-in" style={{ animationDelay: '0.3s' }}>
+                            <h3 className="text-sm font-bold text-text-secondary uppercase tracking-wider mb-4">Account Status</h3>
+                            <div className="flex items-center gap-3 p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-emerald-700">
+                                <BadgeCheck size={20} />
+                                <span className="text-sm font-bold uppercase tracking-tight">Verified Account</span>
+                            </div>
                         </div>
                     </div>
                 </div>
