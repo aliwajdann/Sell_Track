@@ -12,6 +12,7 @@ import {
     BadgeCheck
 } from "lucide-react";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function Profile() {
     const { user, setUser, checkAuth } = useAuth();
@@ -76,9 +77,9 @@ export default function Profile() {
     };
 
     return (
-        <div className="min-h-screen bg-bg-main font-inter">
+        <div className="min-h-screen bg-bg-main font-inter flex flex-col">
             <Navbar />
-            <div className="max-w-5xl mx-auto pt-24 pb-20 px-6">
+            <main className="flex-1 max-w-5xl mx-auto pt-24 pb-20 px-6 w-full">
                 <div className="mb-10 animate-fade-in">
                     <h1 className="text-3xl font-bold text-text-main flex items-center gap-3">
                         <User className="text-primary" size={28} />
@@ -99,7 +100,7 @@ export default function Profile() {
                             <form onSubmit={handleUpdateProfile} className="space-y-6">
                                 {profileMessage.text && (
                                     <div className={`p-3 rounded-lg flex items-center gap-2 text-sm font-medium animate-fade-in ${
-                                        profileMessage.type === "success" ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-rose-50 text-rose-600 border border-rose-100"
+                                        profileMessage.type === "success" ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-rose-50 text-rose-600 border-rose-100"
                                     }`}>
                                         {profileMessage.type === "success" ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
                                         {profileMessage.text}
@@ -263,7 +264,8 @@ export default function Profile() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </main>
+            <Footer />
         </div>
     );
 }

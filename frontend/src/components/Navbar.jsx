@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../api/axios";
-import { User, LogOut, Package, LayoutDashboard, ChevronDown, Menu, X as CloseIcon } from "lucide-react";
+import { User, LogOut, Package, LayoutDashboard, ChevronDown, Menu, X as CloseIcon, ShoppingCart } from "lucide-react";
 
 export default function Navbar() {
     const { user, setUser } = useAuth();
@@ -29,7 +29,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-border">
+        <nav className="fixed top-0 w-full z-50 bg-surface/80  border-b border-border">
             <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
 
                 {/* Logo */}
@@ -44,8 +44,11 @@ export default function Navbar() {
                 <div className="hidden md:flex items-center gap-8">
                     {user && (
                         <div className="flex items-center gap-6">
+                            <Link to="/dashboard" className="text-sm font-medium text-text-secondary hover:text-primary transition-colors flex items-center gap-2">
+                                <LayoutDashboard size={16} /> Dashboard
+                            </Link>
                             <Link to="/orders" className="text-sm font-medium text-text-secondary hover:text-primary transition-colors flex items-center gap-2">
-                                <LayoutDashboard size={16} /> Orders
+                                <ShoppingCart size={16} /> Orders
                             </Link>
                             <Link to="/products" className="text-sm font-medium text-text-secondary hover:text-primary transition-colors flex items-center gap-2">
                                 <Package size={16} /> Products
@@ -80,14 +83,14 @@ export default function Navbar() {
                                 <>
                                     {/* Global Backdrop for Dropdown */}
                                     <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setMenuOpen(false)}></div>
-                                    
+
                                     <div className="absolute right-0 mt-2 w-56 bg-surface rounded-xl shadow-xl border border-border py-1.5 z-50 overflow-hidden animate-fade-in">
                                         <div className="px-4 py-2.5 border-b border-border mb-1">
                                             <p className="text-sm font-bold text-text-main truncate">{user.name}</p>
                                             <p className="text-xs text-text-secondary truncate">{user.email}</p>
                                         </div>
                                         <div className="p-1">
-                                            <button 
+                                            <button
                                                 onClick={() => { navigate("/profile"); setMenuOpen(false); }}
                                                 className="w-full flex items-center gap-3 px-3 py-2 text-sm text-text-secondary hover:bg-bg-main hover:text-primary rounded-lg transition-colors"
                                             >
@@ -118,9 +121,9 @@ export default function Navbar() {
             {mobileMenuOpen && (
                 <>
                     {/* Darker Overlay with Blur for better separation */}
-                    <div className="fixed inset-0 bg-text-main/40 backdrop-blur-md z-[60] transition-opacity animate-fade-in" onClick={() => setMobileMenuOpen(false)}></div>
-                    
-                    <div className="fixed top-0 right-0 h-full w-72 bg-surface shadow-2xl z-[70] p-6 animate-slide-in-right flex flex-col">
+                    <div className="fixed md:hidden  inset-0 bg-text-main/60 backdrop-blur-sm transition-opacity animate-fade-in" onClick={() => setMobileMenuOpen(false)}></div>
+
+                    <div className="fixed top-0 right-0 h-full md:hidden w-72 bg-white p-6 shadow-2xl animate-slide-in-right flex flex-col border-l border-border">
                         <div className="flex justify-between items-center mb-10">
                             <span className="text-xl font-bold text-primary flex items-center gap-2">
                                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
@@ -146,14 +149,17 @@ export default function Navbar() {
                                 </div>
 
                                 <div className="space-y-1">
+                                    <Link to="/dashboard" onClick={closeAllMenus} className="flex items-center gap-3 p-3 text-sm font-medium text-text-secondary hover:bg-primary/10 hover:text-primary rounded-xl transition-colors">
+                                        <LayoutDashboard size={20} /> Dashboard
+                                    </Link>
                                     <Link to="/orders" onClick={closeAllMenus} className="flex items-center gap-3 p-3 text-sm font-medium text-text-secondary hover:bg-primary/10 hover:text-primary rounded-xl transition-colors">
-                                        <LayoutDashboard size={20} /> Orders Dashboard
+                                        <ShoppingCart size={20} /> Orders
                                     </Link>
                                     <Link to="/products" onClick={closeAllMenus} className="flex items-center gap-3 p-3 text-sm font-medium text-text-secondary hover:bg-primary/10 hover:text-primary rounded-xl transition-colors">
-                                        <Package size={20} /> Product Catalog
+                                        <Package size={20} /> Products
                                     </Link>
                                     <Link to="/profile" onClick={closeAllMenus} className="flex items-center gap-3 p-3 text-sm font-medium text-text-secondary hover:bg-primary/10 hover:text-primary rounded-xl transition-colors">
-                                        <User size={20} /> Account Profile
+                                        <User size={20} /> Profile
                                     </Link>
                                 </div>
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import CreateProduct from "../components/CreateProduct.jsx";
 import { 
     Edit2, 
@@ -76,10 +77,10 @@ export default function Products() {
     );
 
     return (
-        <div className="min-h-screen bg-bg-main font-inter">
+        <div className="min-h-screen bg-bg-main font-inter flex flex-col">
             <Navbar />
             
-            <main className="max-w-7xl mx-auto pt-24 pb-20 px-6">
+            <main className="flex-1 max-w-7xl mx-auto pt-24 pb-20 px-6 w-full">
                 {/* Page Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                     <div>
@@ -146,7 +147,7 @@ export default function Products() {
                     {/* Product List */}
                     <div className="lg:col-span-8">
                         <div className="table-container">
-                            <table className="table">
+                            <table className="table min-w-[600px]">
                                 <thead>
                                     <tr>
                                         <th>Product Info</th>
@@ -251,6 +252,7 @@ export default function Products() {
                     </div>
                 )}
             </main>
+            <Footer />
         </div>
     );
 }

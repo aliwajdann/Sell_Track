@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import {
     ShoppingBag,
     User,
@@ -178,10 +179,10 @@ export default function Orders() {
     };
 
     return (
-        <div className="min-h-screen bg-bg-main font-inter">
+        <div className="min-h-screen bg-bg-main font-inter flex flex-col">
             <Navbar />
 
-            <main className="max-w-7xl mx-auto pt-24 pb-20 px-6">
+            <main className="flex-1 max-w-7xl mx-auto pt-24 pb-20 px-6">
                 {/* Page Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                     <div>
@@ -321,7 +322,7 @@ export default function Orders() {
                     {/* Right Side: Order List */}
                     <div className="lg:col-span-8 space-y-6">
                         <div className="table-container">
-                            <table className="table">
+                            <table className="table min-w-[800px]">
                                 <thead>
                                     <tr>
                                         <th>Order ID</th>
@@ -429,6 +430,7 @@ export default function Orders() {
                     </div>
                 </div>
             </main>
+            <Footer />
         </div>
     );
 }

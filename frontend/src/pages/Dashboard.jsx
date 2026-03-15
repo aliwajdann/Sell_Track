@@ -1,13 +1,14 @@
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { ArrowRight, BarChart3, Shield, Zap, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Dashboard() {
     return (
-        <div className="min-h-screen bg-bg-main font-inter">
+        <div className="min-h-screen bg-bg-main font-inter flex flex-col">
             <Navbar />
 
-            <main className="pt-24 pb-20 px-6 max-w-7xl mx-auto">
+            <main className="flex-1 pt-24 pb-20 px-6 max-w-7xl mx-auto w-full">
                 {/* Hero Section */}
                 <section className="text-center mb-24 animate-fade-in">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-semibold mb-8">
@@ -30,7 +31,7 @@ export default function Dashboard() {
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Link to="/orders" className="btn-primary w-full sm:w-auto px-8 py-4 text-lg">
-                            Go to Dashboard <ArrowRight size={20} className="ml-2" />
+                            Go to Orders <ArrowRight size={20} className="ml-2" />
                         </Link>
                         <button className="btn-secondary w-full sm:w-auto px-8 py-4 text-lg">
                             View Documentation
@@ -91,6 +92,7 @@ export default function Dashboard() {
                     </div>
                 </div>
             </main>
+            <Footer />
         </div>
     );
 }
