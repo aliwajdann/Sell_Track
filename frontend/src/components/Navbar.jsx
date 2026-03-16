@@ -5,7 +5,7 @@ import api from "../api/axios";
 import { User, LogOut, Package, LayoutDashboard, ChevronDown, Menu, X as CloseIcon, ShoppingCart } from "lucide-react";
 
 export default function Navbar() {
-    const { user, setUser } = useAuth();
+    const { user, setUser, loading } = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
@@ -29,7 +29,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="fixed top-0 w-full z-50 bg-surface/80  border-b border-border">
+        <nav className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-border">
             <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
 
                 {/* Logo */}
@@ -42,7 +42,7 @@ export default function Navbar() {
 
                 {/* Desktop Navigation */}
                 <div className="hidden md:flex items-center gap-8">
-                    {user && (
+                    {!loading && user && (
                         <div className="flex items-center gap-6">
                             <Link to="/dashboard" className="text-sm font-medium text-text-secondary hover:text-primary transition-colors flex items-center gap-2">
                                 <LayoutDashboard size={16} /> Dashboard
@@ -56,7 +56,9 @@ export default function Navbar() {
                         </div>
                     )}
 
-                    {!user ? (
+                    {loading ? (
+                        <div className="w-20 h-8 bg-gray-200 animate-pulse rounded-lg"></div>
+                    ) : !user ? (
                         <div className="flex items-center gap-4">
                             <Link to="/login" className="text-sm font-semibold text-text-secondary hover:text-text-main transition-colors">
                                 Sign in
@@ -81,9 +83,7 @@ export default function Navbar() {
                             {/* Profile Dropdown */}
                             {menuOpen && (
                                 <>
-                                    {/* Global Backdrop for Dropdown */}
                                     <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setMenuOpen(false)}></div>
-
                                     <div className="absolute right-0 mt-2 w-56 bg-surface rounded-xl shadow-xl border border-border py-1.5 z-50 overflow-hidden animate-fade-in">
                                         <div className="px-4 py-2.5 border-b border-border mb-1">
                                             <p className="text-sm font-bold text-text-main truncate">{user.name}</p>
@@ -120,9 +120,7 @@ export default function Navbar() {
             {/* Mobile Sidebar */}
             {mobileMenuOpen && (
                 <>
-                    {/* Darker Overlay with Blur for better separation */}
-                    <div className="fixed md:hidden  inset-0 bg-text-main/60 backdrop-blur-sm transition-opacity animate-fade-in" onClick={() => setMobileMenuOpen(false)}></div>
-
+                    <div className="fixed md:hidden inset-0 bg-text-main/60 backdrop-blur-sm transition-opacity animate-fade-in" onClick={() => setMobileMenuOpen(false)}></div>
                     <div className="fixed top-0 right-0 h-full md:hidden w-72 bg-white p-6 shadow-2xl animate-slide-in-right flex flex-col border-l border-border">
                         <div className="flex justify-between items-center mb-10">
                             <span className="text-xl font-bold text-primary flex items-center gap-2">
@@ -136,7 +134,13 @@ export default function Navbar() {
                             </button>
                         </div>
 
-                        {user ? (
+                        {loading ? (
+                           <div className="space-y-4">
+                               <div className="h-12 bg-gray-100 animate-pulse rounded-xl"></div>
+                               <div className="h-10 bg-gray-100 animate-pulse rounded-xl"></div>
+                               <div className="h-10 bg-gray-100 animate-pulse rounded-xl"></div>
+                           </div>
+                        ) : user ? (
                             <div className="flex-1 flex flex-col">
                                 <div className="p-4 bg-bg-main rounded-2xl flex items-center gap-3 mb-8 border border-border">
                                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
