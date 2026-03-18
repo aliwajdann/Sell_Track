@@ -120,8 +120,8 @@ export default function Navbar() {
             {/* Mobile Sidebar */}
             {mobileMenuOpen && (
                 <>
-                    <div className="fixed md:hidden inset-0 bg-text-main/60 backdrop-blur-sm transition-opacity animate-fade-in" onClick={() => setMobileMenuOpen(false)}></div>
-                    <div className="fixed top-0 right-0 h-full md:hidden w-72 bg-white p-6 shadow-2xl animate-slide-in-right flex flex-col border-l border-border">
+                    {/* <div className="fixed top-0 left-0  inset-0  md:hidden bg-slate-900/60 backdrop-blur-sm transition-opacity animate-fade-in" onClick={() => setMobileMenuOpen(false)}></div> */}
+                    <div className="fixed right-0 top-0  w-full   md:hidden bg-surface p-6 shadow-2xl animate-slide-in-right flex flex-col border-l border-border">
                         <div className="flex justify-between items-center mb-10">
                             <span className="text-xl font-bold text-primary flex items-center gap-2">
                                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
@@ -129,17 +129,17 @@ export default function Navbar() {
                                 </div>
                                 SellTrack
                             </span>
-                            <button onClick={() => setMobileMenuOpen(false)} className="p-2 hover:bg-bg-main rounded-lg text-text-secondary">
+                            <button onClick={() => setMobileMenuOpen(false)} className="p-2 hover:bg-bg-main rounded-lg text-text-secondary transition-colors">
                                 <CloseIcon size={24} />
                             </button>
                         </div>
 
                         {loading ? (
-                           <div className="space-y-4">
-                               <div className="h-12 bg-gray-100 animate-pulse rounded-xl"></div>
-                               <div className="h-10 bg-gray-100 animate-pulse rounded-xl"></div>
-                               <div className="h-10 bg-gray-100 animate-pulse rounded-xl"></div>
-                           </div>
+                            <div className="space-y-4">
+                                <div className="h-12 bg-gray-100 animate-pulse rounded-xl"></div>
+                                <div className="h-10 bg-gray-100 animate-pulse rounded-xl"></div>
+                                <div className="h-10 bg-gray-100 animate-pulse rounded-xl"></div>
+                            </div>
                         ) : user ? (
                             <div className="flex-1 flex flex-col">
                                 <div className="p-4 bg-bg-main rounded-2xl flex items-center gap-3 mb-8 border border-border">
