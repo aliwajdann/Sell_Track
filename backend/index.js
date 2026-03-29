@@ -12,17 +12,23 @@ import orderRoutes from "./routes/orderRoutes.js";
 const app = express();
 const port = process.env.PORT || 3000;
 
-const allowedOrigins = [
-    "http://localhost:5173",
-    "http://localhost:3000",
-    "https://sell-track.vercel.app"
-];
+const allowedOrigins = new Set(
+    [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://sell-track.vercel.app",
+        process.env.FRONTEND_URL
+    ].filter(Boolean)
+);
+
+const isAllowedVercelPreview = (origin) =>
+    typeof origin === "string" && /^https:\/\/[a-zA-Z0-9-]+\.vercel\.app$/.test(origin);
 
 app.use(express.json());
 app.use(
     cors({
         origin: function (origin, callback) {
-            if (!origin || allowedOrigins.includes(origin)) {
+            if (!origin || allowedOrigins.has(origin) || isAllowedVercelPreview(origin)) {
                 callback(null, true);
             } else {
                 callback(new Error("Not allowed by CORS"));
