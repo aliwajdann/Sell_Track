@@ -7,10 +7,21 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
-
+import { testConnection } from "./db/db.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+const requiredEnv = ["DATABASE_URL", "JWT_SECRET"];
+const missingEnv = requiredEnv.filter((key) => !process.env[key]);
+
+if (missingEnv.length > 0) {
+    console.error(`Missing required environment variables: ${missingEnv.join(", ")}`);
+    process.exit(1);
+}
+
+const normalizeOrigin = (value) =>
+    typeof value === "string" ? value.trim().replace(/\/+$/, "") : value;
 
 const allowedOrigins = new Set(
     [
@@ -18,7 +29,9 @@ const allowedOrigins = new Set(
         "http://localhost:3000",
         "https://sell-track.vercel.app",
         process.env.FRONTEND_URL
-    ].filter(Boolean)
+    ]
+        .filter(Boolean)
+        .map(normalizeOrigin)
 );
 
 const isAllowedVercelPreview = (origin) =>
@@ -27,8 +40,10 @@ const isAllowedVercelPreview = (origin) =>
 app.use(express.json());
 app.use(
     cors({
-        origin: function (origin, callback) {
-            if (!origin || allowedOrigins.has(origin) || isAllowedVercelPreview(origin)) {
+        origin: (origin, callback) => {
+            const normalizedOrigin = normalizeOrigin(origin);
+
+            if (!origin || allowedOrigins.has(normalizedOrigin) || isAllowedVercelPreview(normalizedOrigin)) {
                 callback(null, true);
             } else {
                 callback(new Error("Not allowed by CORS"));
@@ -39,37 +54,33 @@ app.use(
 );
 app.use(cookieParser());
 
-// routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+
 app.get("/", (req, res) => {
-    res.send("SellTrack API is alive 🚀");
+    res.send("SellTrack API is alive");
 });
 
-
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
-// 2. The 404 Handler (If we get here, no route matched)
 app.use((req, res, next) => {
     const error = new Error(`Not Found - ${req.originalUrl}`);
     res.status(404);
-    next(error); // This sends the 404 error to the actual error middleware below
+    next(error);
 });
 
-// 3. The Global Error Middleware (Handles both 400s, 404s, and 500s)
 app.use(errorHandler);
-// app.use(errorHandler);
-// {
-//     "name": "Ali Wajdan",
-//     "username" : "aliwajdan",
-//     "email" : "aliwajdan.it@gmail.com",
-//     "password": "yoyo123&"
-// }
-// {
-//     "email" : "aliwajdan.it@gmail.com",
-//     "password": "yoyo123&"
-// newStrongPassword456
-// }
+
+const startServer = async () => {
+    try {
+        await testConnection();
+        app.listen(port, () => {
+            console.log(`Server running on port ${port}`);
+        });
+    } catch (err) {
+        console.error("Database connection failed:", err.message);
+        process.exit(1);
+    }
+};
+
+startServer();

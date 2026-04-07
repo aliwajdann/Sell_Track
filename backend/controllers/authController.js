@@ -2,8 +2,63 @@ import { query } from "../db/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+const isProductionRequest = (req) => process.env.NODE_ENV === "production" || req.hostname !== "localhost";
+
+const getCookieOptions = (req) => ({
+    httpOnly: true,
+    secure: isProductionRequest(req),
+    sameSite: isProductionRequest(req) ? "none" : "lax",
+    maxAge: 24 * 60 * 60 * 1000
+});
+
+const getClearCookieOptions = (req) => ({
+    httpOnly: true,
+    secure: isProductionRequest(req),
+    sameSite: isProductionRequest(req) ? "none" : "lax"
+});
+
+const signToken = (user) =>
+    jwt.sign(
+        {
+            id: user.id,
+            name: user.name,
+            username: user.username,
+            email: user.email
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+    );
+
+const mapDatabaseError = (err) => {
+    if (err?.code === "23505") {
+        const duplicateField = err?.constraint?.includes("email")
+            ? "Email"
+            : err?.constraint?.includes("username")
+                ? "Username"
+                : "Value";
+
+        const error = new Error(`${duplicateField} already exists`);
+        error.statusCode = 409;
+        return error;
+    }
+
+    if (err?.code === "42P01") {
+        const error = new Error("Database schema is missing. Create the required tables in Supabase.");
+        error.statusCode = 500;
+        return error;
+    }
+
+    return err;
+};
+
 export const registerUser = async (req, res, next) => {
     const { name, username, email, password } = req.body;
+
+    if (!name || !username || !email || !password) {
+        const error = new Error("All fields are required");
+        error.statusCode = 400;
+        return next(error);
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -15,19 +70,21 @@ export const registerUser = async (req, res, next) => {
 
         return res.status(201).json(result.rows[0]);
     } catch (err) {
-        next(err);
+        next(mapDatabaseError(err));
     }
 };
 
 export const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
 
-    try {
-        const result = await query(
-            "SELECT * FROM users WHERE email = $1",
-            [email]
-        );
+    if (!email || !password) {
+        const error = new Error("Email and password are required");
+        error.statusCode = 400;
+        return next(error);
+    }
 
+    try {
+        const result = await query("SELECT * FROM users WHERE email = $1", [email]);
         const user = result.rows[0];
 
         if (!user) {
@@ -44,25 +101,8 @@ export const loginUser = async (req, res, next) => {
             throw error;
         }
 
-        const token = jwt.sign(
-            {
-                id: user.id,
-                name: user.name,
-                username: user.username,
-                email: user.email
-            },
-            process.env.JWT_SECRET || "default_secret_key",
-            { expiresIn: "1d" }
-        );
-
-        const isProduction = process.env.NODE_ENV === "production" || req.hostname !== "localhost";
-
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? "none" : "lax",
-            maxAge: 24 * 60 * 60 * 1000
-        });
+        const token = signToken(user);
+        res.cookie("token", token, getCookieOptions(req));
 
         return res.status(200).json({
             message: "Login successful!",
@@ -73,31 +113,26 @@ export const loginUser = async (req, res, next) => {
                 email: user.email
             }
         });
-
     } catch (err) {
-        next(err);
+        next(mapDatabaseError(err));
     }
 };
 
 export const logoutUser = (req, res) => {
-    res.clearCookie("token");
+    res.clearCookie("token", getClearCookieOptions(req));
     res.json({ message: "Logged out successfully" });
-}
+};
 
-// controllers/userController.js
 export const deleteUser = async (req, res, next) => {
     try {
-        // req.user was populated by the 'protect' middleware
         const userId = req.user.id;
 
         await query("DELETE FROM users WHERE id = $1", [userId]);
-
-        // Clear the cookie so they are logged out
-        res.clearCookie("token");
+        res.clearCookie("token", getClearCookieOptions(req));
 
         res.status(200).json({ message: "Account deleted successfully" });
     } catch (err) {
-        next(err);
+        next(mapDatabaseError(err));
     }
 };
 
@@ -119,35 +154,16 @@ export const updateUser = async (req, res, next) => {
         );
 
         const updatedUser = result.rows[0];
+        const token = signToken(updatedUser);
 
-        // Re-issue token with updated info
-        const token = jwt.sign(
-            {
-                id: updatedUser.id,
-                name: updatedUser.name,
-                username: updatedUser.username,
-                email: updatedUser.email
-            },
-            process.env.JWT_SECRET || "default_secret_key",
-            { expiresIn: "1d" }
-        );
-
-        const isProduction = process.env.NODE_ENV === "production" || req.hostname !== "localhost";
-
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? "none" : "lax",
-            maxAge: 24 * 60 * 60 * 1000
-        });
+        res.cookie("token", token, getCookieOptions(req));
 
         res.json({
             message: "Profile updated successfully",
             user: updatedUser
         });
-
     } catch (err) {
-        next(err);
+        next(mapDatabaseError(err));
     }
 };
 
@@ -156,8 +172,6 @@ export const updatePassword = async (req, res, next) => {
     const { currentPassword, newPassword } = req.body;
 
     try {
-
-        // 1️⃣ Get user from DB
         const userResult = await query(
             `SELECT password FROM users WHERE id = $1`,
             [userId]
@@ -171,11 +185,7 @@ export const updatePassword = async (req, res, next) => {
             throw error;
         }
 
-        // 2️⃣ Check current password
-        const isPasswordValid = await bcrypt.compare(
-            currentPassword,
-            user.password
-        );
+        const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
 
         if (!isPasswordValid) {
             const error = new Error("Current password is incorrect");
@@ -183,10 +193,8 @@ export const updatePassword = async (req, res, next) => {
             throw error;
         }
 
-        // 3️⃣ Hash new password
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-        // 4️⃣ Update password
         await query(
             `UPDATE users
        SET password = $1
@@ -197,8 +205,7 @@ export const updatePassword = async (req, res, next) => {
         res.json({
             message: "Password updated successfully"
         });
-
     } catch (err) {
-        next(err);
+        next(mapDatabaseError(err));
     }
 };

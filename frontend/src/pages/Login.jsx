@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../api/axios";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, ArrowRight, Package, CheckCircle2, AlertCircle } from "lucide-react";
+import { Mail, Lock, ArrowRight, Package, AlertCircle } from "lucide-react";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -73,7 +73,7 @@ export default function Login() {
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" size={18} />
                                 <input
                                     type="password"
-                                    placeholder="••••••••"
+                                    placeholder="********"
                                     className="input pl-10"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
